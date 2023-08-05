@@ -1,0 +1,18 @@
+version: 0.2
+
+phases:
+  pre_build:
+    commands:
+      - npm install
+  build:
+    commands:
+      - npm run build
+      - docker build -t my-react-app:latest .
+  post_build:
+    commands:
+      - $(aws ecr get-login --no-include-email --region <your-region>)
+      - docker tag my-react-app:latest <your-ecr-repo-uri>:latest
+      - docker push <your-ecr-repo-uri>:latest
+artifacts:
+  files:
+    - '**/*'
